@@ -1,3 +1,4 @@
+const config = require("./config.js"); // Secrets
 const express = require("express");
 const bodyParser = require("body-parser");
 const https = require("https");
@@ -5,11 +6,8 @@ const { response } = require("express");
 
 const app = express();
 const PORT = 3000;
-const mailChimpAPIKey = "4a4f5ee9977851391aaaa727c36b5647-us14";
-const mailChimpDataCenter = "14";
-const mailChimpAudienceID = "99c9a94bac";
 const mailChimpPingURL =
-	"https://us" + mailChimpDataCenter + ".api.mailchimp.com/3.0/ping";
+	"https://us" + config.mailChimpDataCenter + ".api.mailchimp.com/3.0/ping";
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -41,13 +39,13 @@ app.post("/", (req, res) => {
 
 	const url =
 		"https://us" +
-		mailChimpDataCenter +
+		config.mailChimpDataCenter +
 		".api.mailchimp.com/3.0/lists/" +
-		mailChimpAudienceID;
+		config.mailChimpAudienceID;
 
 	const options = {
 		method: "POST",
-		auth: "User:" + mailChimpAPIKey,
+		auth: "User:" + config.mailChimpAPIKey,
 	};
 
 	const request = https.request(url, options, (response) => {
@@ -73,13 +71,13 @@ app.post("/", (req, res) => {
 								"window.location.replace('/');</script>"
 						);
 					} else {
-						// Output the error code
-						// res.send(
-						// 	"Error subscribing: " +
-						// 		JSON.parse(data).errors[0].error +
-						// 		"|| Error Code: " +
-						// 		JSON.parse(data).errors[0].error_code
-						// );
+						//Output the error code
+						res.send(
+							"Error subscribing: " +
+								JSON.parse(data).errors[0].error +
+								"|| Error Code: " +
+								JSON.parse(data).errors[0].error_code
+						);
 						res.sendFile(__dirname + "/failure.html");
 					}
 				}
