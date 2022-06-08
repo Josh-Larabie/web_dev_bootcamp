@@ -1,13 +1,24 @@
-const config = require("./config.js"); // Secrets
+const secrets = require("./secrets.js"); // Secrets for API access
 const express = require("express");
 const bodyParser = require("body-parser");
 const https = require("https");
 const { response } = require("express");
-
 const app = express();
 const PORT = 3000;
+
 const mailChimpPingURL =
-	"https://us" + config.mailChimpDataCenter + ".api.mailchimp.com/3.0/ping";
+	"https://us" + secrets.mailChimpDataCenter + ".api.mailchimp.com/3.0/ping";
+
+const url =
+	"https://us" +
+	secrets.mailChimpDataCenter +
+	".api.mailchimp.com/3.0/lists/" +
+	secrets.mailChimpAudienceID;
+
+const options = {
+	method: "POST",
+	auth: "User:" + secrets.mailChimpAPIKey,
+};
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -34,35 +45,20 @@ app.post("/", (req, res) => {
 		],
 	};
 
-	var jsonData = JSON.stringify(data);
-	console.log(jsonData);
-
-	const url =
-		"https://us" +
-		config.mailChimpDataCenter +
-		".api.mailchimp.com/3.0/lists/" +
-		config.mailChimpAudienceID;
-
-	const options = {
-		method: "POST",
-		auth: "User:" + config.mailChimpAPIKey,
-	};
+	let jsonData = JSON.stringify(data);
 
 	const request = https.request(url, options, (response) => {
 		if (response.statusCode === 200) {
 			response.on("data", (data) => {
-				console.log(JSON.parse(data));
-
 				/*
 				Mailchimp's API has custom error code handling stored in an array (errors). 
 				We are able to perform different actions once we determine the reponse's error code found in the body of the data.
-				(data.errors) is an array, therefore we must ensure contents exist before accessing a specific index.
 				*/
 
 				if (JSON.parse(data).errors.length === 0) {
 					res.sendFile(__dirname + "/success.html");
 				} else {
-					// Special handling for existing user error codes
+					// Handling for existing user error codes
 					if (
 						JSON.parse(data).errors[0].error_code === "ERROR_CONTACT_EXISTS"
 					) {
@@ -83,10 +79,6 @@ app.post("/", (req, res) => {
 				}
 			});
 		} else {
-			// Outputs Response Data to Console
-			// response.on("data", function (data) {
-			// console.log(JSON.parse(data));
-
 			res.send("HTTP Status Code: " + response.statusCode);
 		}
 	});
@@ -99,12 +91,6 @@ app.post("/failure", function (req, res) {
 	res.redirect("/");
 });
 
-// Deploy app locally
-// app.listen(PORT, function () {
-// 	console.log("Server is running on port: " + PORT);
-// });
-
-// Deploy app to Heroku (process.env.PORT) or Locally
-app.listen(process.env.PORT || PORT, function () {
+app.listen(PORT, function () {
 	console.log("Server is running on port: " + PORT);
 });
