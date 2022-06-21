@@ -10,10 +10,11 @@
 		<h1><%= dayName%></h1>
 
 		<ul>
-			<li>Buy Food</li>
-			<li>Cook Food</li>
-			<li>Eat Food</li>
+			<% for (let i = 0; i < newListItems.length; i++){ %>
+			<li><%= newListItems[i]%></li>
+			<% } %>
 		</ul>
+
 		<form action="/" method="post">
 			<input type="text" name="newItem" placeholder="..." />
 			<button type="submit">Add</button>
