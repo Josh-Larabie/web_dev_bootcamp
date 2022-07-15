@@ -8,17 +8,27 @@
 		<link rel="stylesheet" href="css/styles.css"
 	</head>
 	<body>
-		<h1><%= dayName%></h1>
+		<div class="box" id="heading">
+			<h1><%= dayName%></h1>
+		</div>
 
-		<ul>
+		<div class="box" id="">
 			<% for (let i = 0; i < newListItems.length; i++){ %>
-			<li><%= newListItems[i]%></li>
+			<div class="item">
+				<input type="checkbox" />
+				<p><%= newListItems[i]%></p>
+			</div>
 			<% } %>
-		</ul>
 
-		<form action="/" method="post">
-			<input type="text" name="newItem" placeholder="..." />
-			<button type="submit">Add</button>
-		</form>
+			<form class="item" action="/" method="post">
+				<input
+					type="text"
+					name="newItem"
+					placeholder="New Item"
+					autocomplete="off"
+				/>
+				<button type="submit">+</button>
+			</form>
+		</div>
 	</body>
 </html>
