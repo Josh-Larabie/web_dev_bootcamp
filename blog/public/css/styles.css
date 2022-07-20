@@ -11,8 +11,20 @@
     font-size: 12px;
     letter-spacing: 5px;
 }
-.navbar-nav  li a:hover {
+
+
+/* Bootstap 3 */
+/* .navbar-nav  li a:hover {
     color: #1abc9c !important;
+} */
+
+/* Bootstap 5 */
+.navbar  li a:hover {
+    color: #1abc9c !important;
+}
+
+.nav li a{
+    color: black !important;
 }
 
 .footer-padding {
