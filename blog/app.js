@@ -13,6 +13,8 @@ const contactContent =
 
 const app = express();
 
+const posts = [];
+
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,7 +37,13 @@ app.get("/compose", (req, res) => {
 });
 
 app.post("/compose", (req, res) => {
-	console.log(req.body.postTitle);
+	const post = {
+		postTitle: req.body.postTitle,
+		postBody: req.body.postBody,
+	};
+	
+	posts.push(post);
+	console.log(posts);
 });
 
 app.listen(3000, function () {
