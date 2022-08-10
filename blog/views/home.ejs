@@ -3,6 +3,7 @@
 <p><%=homeStartingContent%></p>
 <% posts.forEach((post) => { %>
     <h1><%=post["postTitle"]%></h1>
-    <p><%=post["postBody"]%></p>
+    <p><%= post["postBody"].length > 100 ? post["postBody"].substring(0, 100) + "..." : post["postBody"]; %> 
+    <a href="/post/<%= post["postTitle"] %>">Read More</a></p>
 <%	}); %>
 <%- include("partials/footer") -%>

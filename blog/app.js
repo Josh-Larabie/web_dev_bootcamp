@@ -22,7 +22,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-	res.render("home", { homeStartingContent: homeStartingContent, posts: posts });
+	res.render("home", {
+		homeStartingContent: homeStartingContent,
+		posts: posts,
+	});
 });
 
 app.get("/about", (req, res) => {
@@ -37,6 +40,21 @@ app.get("/compose", (req, res) => {
 	res.render("compose");
 });
 
+app.get("/post/:postTitle", function (req, res) {
+	const requestedTitle = _.lowerCase(req.params.postTitle);
+
+	posts.forEach(function (post) {
+		const storedTitle = _.lowerCase(post.postTitle);
+
+		if (storedTitle === requestedTitle) {
+			res.render("post", {
+				postTitle: post.postTitle,
+				postBody: post.postBody,
+			});
+		}
+	});
+});
+
 app.post("/compose", (req, res) => {
 	const post = {
 		postTitle: req.body.postTitle,
@@ -46,25 +64,6 @@ app.post("/compose", (req, res) => {
 	posts.push(post);
 	res.redirect("/");
 });
-
-app.get("/post/:postTitle", (req, res) => {
-	const requestedTitle = req.params.postTitle
-
-	posts.forEach((post) => {
-		if (post.postTitle === requestedTitle) {
-			res.render("post", {
-				postTitle: post.postTitle,
-				postBody: post.postBody,
-			});
-		} else {
-			res.render("post", {
-				postTitle: requestedTitle,
-				postBody: "Post not found",
-			});
-		}
-	});
-});
-
 app.listen(3000, function () {
 	console.log("Server started on port 3000");
 });
