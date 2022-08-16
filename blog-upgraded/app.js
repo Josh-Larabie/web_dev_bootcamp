@@ -1,17 +1,9 @@
-//jshint esversion:6
-
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require("lodash");
-const db_user = require("./secrets.js");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const uri =
-	"mongodb+srv://" +
-	db_user.username +
-	":" +
-	db_user.password +
-	"@blog-cluster.alzxx4g.mongodb.net/?retryWrites=true&w=majority";
 
 const homeStartingContent =
 	"Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -22,19 +14,19 @@ const contactContent =
 
 const app = express();
 
-const client = new MongoClient(uri, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	serverApi: ServerApiVersion.v1,
-});
-client.connect((err) => {
-	const collection = client.db("test").collection("devices");
-	// perform actions on the collection object
+let insertPost = function (data) {
+  
+	const client = new MongoClient(process.env.DB_URI);
+	const database = client.db(process.env.DB_NAME);
+	const posts = database.collection(process.env.DB_COLLECTION);
+	const query = data;
+	const post = posts.insertOne(query);
+	console.log("Inserted: " + data);
+	// Ensures that the client will close when you finish/error
 	client.close();
-});
+};
 
 app.set("view engine", "ejs");
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
@@ -65,6 +57,8 @@ app.post("/compose", function (req, res) {
 		content: req.body.postBody,
 	};
 
+	insertPost(post); // insert post into database
+	console.log("Inserted into DB.");
 	posts.push(post);
 
 	res.redirect("/");
