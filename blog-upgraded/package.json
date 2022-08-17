@@ -14,7 +14,8 @@
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "lodash": "^4.17.11",
-    "mongodb": "^4.8.1"
+    "mongodb": "^4.8.1",
+    "mongoose": "^6.5.2"
   },
   "description": ""
 }
