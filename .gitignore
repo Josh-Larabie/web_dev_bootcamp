@@ -1,4 +1,6 @@
 .DS_Store
 secrets.*
+*.env
 node_modules/
 mongoose-example/
+wiki/db
